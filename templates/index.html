@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Junbr0's To Do</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <h1>To-Do List</h1>
+      <input type="text" id="taskInput" placeholder="Add a new task" />
+      <button onclick="addTask()">Add Task</button>
+      <ul id="taskList"></ul>
+    </div>
+
+    <script src="/static/script.js"></script>
+    <script>
+      function addTask() {
+        var taskInput = document.getElementById('taskInput')
+        var taskText = taskInput.value.trim()
+        if (taskText === '') {
+          alert('Please enter a task!')
+          return
+        }
+
+        var listItem = document.createElement('li')
+        var checkbox = document.createElement('input')
+        checkbox.type = 'checkbox'
+        checkbox.onclick = function () {
+          listItem.classList.toggle('completed', checkbox.checked)
+        }
+        var textSpan = document.createElement('span')
+        textSpan.textContent = taskText
+
+        var deleteButton = createButton('❌', function () {
+          listItem.remove()
+        })
+        var upButton = createButton('↑', function () {
+          moveItem(listItem, -1)
+        })
+        var downButton = createButton('↓', function () {
+          moveItem(listItem, 1)
+        })
+
+        listItem.appendChild(checkbox)
+        listItem.appendChild(textSpan)
+        listItem.appendChild(deleteButton)
+        listItem.appendChild(upButton)
+        listItem.appendChild(downButton)
+
+        document.getElementById('taskList').appendChild(listItem)
+        taskInput.value = ''
+      }
+
+      function createButton(text, onClick) {
+        var button = document.createElement('button')
+        button.textContent = text
+        button.onclick = onClick
+        return button
+      }
+
+      function moveItem(item, direction) {
+        var index = Array.from(item.parentNode.children).indexOf(item)
+        var targetIndex = index + direction
+        if (direction === -1 && targetIndex >= 0) {
+          item.parentNode.insertBefore(
+            item,
+            item.parentNode.children[targetIndex]
+          )
+        } else if (
+          direction === 1 &&
+          targetIndex < item.parentNode.children.length
+        ) {
+          item.parentNode.insertBefore(
+            item.parentNode.children[targetIndex],
+            item
+          )
+        }
+      }
+    </script>
+  </body>
+</html>
